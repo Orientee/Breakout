@@ -12,14 +12,12 @@ public class Brick : MonoBehaviour
     public ParticleSystem DestroyEffect;
 
     public static event Action<Brick> OnBrickDestruction;
+
     private void Awake()
     {
         sr = GetComponent<SpriteRenderer>();
     }
-    //private void Start()
-    //{
-    //    sr.sprite = BricksManager.Instance.Sprites[this.HitPoints - 1];
-    //}
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Ball ball = collision.gameObject.GetComponent<Ball>();
@@ -31,6 +29,7 @@ public class Brick : MonoBehaviour
         this.HitPoints--;
         if (this.HitPoints <= 0)
         {
+            BricksManager.Instance.RemainingBricks.Remove(this);
             OnBrickDestruction?.Invoke(this);
             SpawnDestroyEffect();
             Destroy(this.gameObject);
