@@ -15,6 +15,8 @@ public class GameManager : Singleton<GameManager>
 
     public bool IsGameStarted { get; set; }
 
+    public static event Action<int> OnLiveLost;
+
     void Start()
     {
         Lives = AvaibleLives;
@@ -49,10 +51,7 @@ public class GameManager : Singleton<GameManager>
             }
             else
             {
-                // restart balls
-                //stop game
-                // reload level
-
+                OnLiveLost?.Invoke(this.Lives);
                 BallsManager.Instance.ResetBalls();
                 IsGameStarted = false;
                 BricksManager.Instance.LoadLevel(BricksManager.Instance.CurrentLevel);

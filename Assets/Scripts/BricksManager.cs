@@ -17,6 +17,8 @@ public class BricksManager : Singleton<BricksManager>
     public Sprite[] Sprites;
     public Color[] BrickColors;
 
+    public static event Action OnLevelLoaded;
+
     public List<Brick> RemainingBricks { get; set; }
     public List<int[,]> LevelsData { get; set; }
 
@@ -94,6 +96,8 @@ public class BricksManager : Singleton<BricksManager>
         }
 
         this.InitialBricksCount = this.RemainingBricks.Count;
+        OnLevelLoaded?.Invoke();
+
     }
 
     private List<int[,]> LoadLevelsData()
