@@ -412,6 +412,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 129534438}
   m_CullTransparentMesh: 0
+--- !u!1 &196645166
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 196645167}
+  - component: {fileID: 196645168}
+  m_Layer: 0
+  m_Name: CollectablesManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &196645167
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196645166}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1942155568}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &196645168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 196645166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e65fffa6427c0b3459dc8eef1968b442, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AvaibleBuffs:
+  - {fileID: 5614178617963385462, guid: 25104c8f268100641addd3f4152284f5, type: 3}
+  - {fileID: 5323251564043816112, guid: 3d90cedc0ea8eac46b29f38f53c6190c, type: 3}
+  AvaibleDebuffs:
+  - {fileID: 623976663176738668, guid: a94d7b95854311b41a496fa5945115b7, type: 3}
+  buffChance: 15
+  debufChance: 10
 --- !u!1 &228070646
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,7 +898,7 @@ GameObject:
   - component: {fileID: 434959515}
   m_Layer: 0
   m_Name: DeadWall
-  m_TagString: Untagged
+  m_TagString: DeathWall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -919,7 +969,7 @@ GameObject:
   - component: {fileID: 756825055}
   m_Layer: 0
   m_Name: Paddle
-  m_TagString: Untagged
+  m_TagString: Paddle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -936,6 +986,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7f5776bb0029264b87b4bf00369d86b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  extendShrinkDuration: 10
+  paddleWidth: 2
+  paddleHeight: 0.28
 --- !u!61 &756825056
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1756,6 +1809,7 @@ Transform:
   - {fileID: 2102280056}
   - {fileID: 1423544334}
   - {fileID: 1597486978}
+  - {fileID: 196645167}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
