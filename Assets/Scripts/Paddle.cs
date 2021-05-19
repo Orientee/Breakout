@@ -10,8 +10,10 @@ public class Paddle : Singleton<Paddle>
     private BoxCollider2D bc;
     private float paddleInitialY;
     private float defaultPaddleWidthInPixels = 200;
-    private float defaultLeftClamp = 135;
-    private float defaultRightClamp = 410;
+    private float defaultLeftClamp = 85;
+    private float defaultRightClamp = 255;
+    private bool isBigger = false;
+    private bool isSmaller = false;
 
     public float extendShrinkDuration = 10f;
     public float paddleWidth = 2f;
@@ -30,6 +32,7 @@ public class Paddle : Singleton<Paddle>
     void Update()
     {
         PaddleMovement();
+        UpdateTouch();
     }
 
     private void PaddleMovement()
@@ -52,14 +55,18 @@ public class Paddle : Singleton<Paddle>
         this.PaddleIsTransforming = true;
         StartCoroutine(ResetPaddleWidthAfterTime(extendShrinkDuration));
 
-        if(width > sr.size.x)
+
+        if (width > sr.size.x)
         {
             float currentWidth = sr.size.x;
             while(currentWidth < width)
             {
                 currentWidth += Time.deltaTime * 2;
+                defaultLeftClamp = 65;
+                defaultRightClamp = 275;
                 sr.size = new Vector2(currentWidth, paddleHeight);
                 bc.size = new Vector2(currentWidth, paddleHeight);
+                isBigger = true;
                 yield return null;
             }
         }
@@ -69,11 +76,23 @@ public class Paddle : Singleton<Paddle>
             while(currentWidth > width)
             {
                 currentWidth -= Time.deltaTime * 2;
+                defaultLeftClamp = 110;
+                defaultRightClamp = 230;
                 sr.size = new Vector2(currentWidth, paddleHeight);
                 bc.size = new Vector2(currentWidth, paddleHeight);
+                isSmaller = true;
                 yield return null;
             }
         }
+        
+        if (isBigger && width > sr.size.x || isSmaller && width < sr.size.x)
+        {
+            defaultLeftClamp = 85;
+            defaultRightClamp = 255;
+            isBigger = false;
+            isSmaller = false;
+        }
+
         PaddleIsTransforming = false;
     }
 
@@ -103,5 +122,45 @@ public class Paddle : Singleton<Paddle>
                 ballRb.AddForce(new Vector2((Mathf.Abs(difference * 200)), BallsManager.Instance.initialBallSpeed));
             }
         }
+    }
+
+    private void UpdateTouch()
+    {
+        if (Input.touchCount <= 0)
+            return;
+
+        switch (Input.touches[0].phase)
+        {
+            case TouchPhase.Began:
+                {
+                    OnTouchDown();
+                }
+                break;
+            case TouchPhase.Moved:
+                {
+                    OnTouchDrag();
+                }
+                break;
+            case TouchPhase.Ended:
+                {
+                    OnTouchUp();
+                }
+                break;
+        }
+    }
+
+    private void OnTouchDown()
+    {
+
+    }
+
+    private void OnTouchDrag()
+    {
+        PaddleMovement();
+    }
+
+    private void OnTouchUp()
+    {
+
     }
 }
