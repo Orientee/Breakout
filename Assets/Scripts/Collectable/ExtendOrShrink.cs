@@ -1,6 +1,6 @@
 ﻿public class ExtendOrShrink : Collectable
 {
-    public float newWidth = 2f;
+    public float newWidth = 2.5f;
 
     protected override void ApplyEffect()
     {

@@ -12,8 +12,6 @@ public class Paddle : Singleton<Paddle>
     private float defaultPaddleWidthInPixels = 200;
     private float defaultLeftClamp = 85;
     private float defaultRightClamp = 255;
-    private bool isBigger = false;
-    private bool isSmaller = false;
 
     public float extendShrinkDuration = 10f;
     public float paddleWidth = 2f;
@@ -26,23 +24,23 @@ public class Paddle : Singleton<Paddle>
         mainCamera = FindObjectOfType<Camera>();
         bc = GetComponent<BoxCollider2D>();
         sr = GetComponent<SpriteRenderer>();
-        paddleInitialY = this.transform.position.y;
+        paddleInitialY = transform.position.y;
     }
 
     void Update()
     {
-        PaddleMovement();
+        //PaddleMovement();
         UpdateTouch();
     }
 
     private void PaddleMovement()
     {
-        float paddleShift = (defaultPaddleWidthInPixels - ((defaultPaddleWidthInPixels / 2) * this.sr.size.x)) / 2;
+        float paddleShift = (defaultPaddleWidthInPixels - ((defaultPaddleWidthInPixels / 2) * sr.size.x)) / 2;
         float leftClamp = defaultLeftClamp - paddleShift;
         float rightClamp = defaultRightClamp + paddleShift;
         float mousePositionPixels = Mathf.Clamp(Input.mousePosition.x, leftClamp, rightClamp);
         float mousePositionWorldX = mainCamera.ScreenToWorldPoint(new Vector3(mousePositionPixels, 0, 0)).x;
-        this.transform.position = new Vector3(mousePositionWorldX, paddleInitialY, 0);
+        transform.position = new Vector3(mousePositionWorldX, paddleInitialY, 0);
     }
 
     public void StartWidthAnimation(float newWidth)
@@ -52,47 +50,31 @@ public class Paddle : Singleton<Paddle>
 
     public IEnumerator AnimatePaddleWidth(float width)
     {
-        this.PaddleIsTransforming = true;
+        PaddleIsTransforming = true;
         StartCoroutine(ResetPaddleWidthAfterTime(extendShrinkDuration));
-
 
         if (width > sr.size.x)
         {
             float currentWidth = sr.size.x;
-            while(currentWidth < width)
+            while (currentWidth < width)
             {
                 currentWidth += Time.deltaTime * 2;
-                defaultLeftClamp = 65;
-                defaultRightClamp = 275;
                 sr.size = new Vector2(currentWidth, paddleHeight);
                 bc.size = new Vector2(currentWidth, paddleHeight);
-                isBigger = true;
                 yield return null;
             }
         }
         else
         {
             float currentWidth = sr.size.x;
-            while(currentWidth > width)
+            while (currentWidth > width)
             {
                 currentWidth -= Time.deltaTime * 2;
-                defaultLeftClamp = 110;
-                defaultRightClamp = 230;
                 sr.size = new Vector2(currentWidth, paddleHeight);
                 bc.size = new Vector2(currentWidth, paddleHeight);
-                isSmaller = true;
                 yield return null;
             }
         }
-        
-        if (isBigger && width > sr.size.x || isSmaller && width < sr.size.x)
-        {
-            defaultLeftClamp = 85;
-            defaultRightClamp = 255;
-            isBigger = false;
-            isSmaller = false;
-        }
-
         PaddleIsTransforming = false;
     }
 
@@ -133,7 +115,14 @@ public class Paddle : Singleton<Paddle>
         {
             case TouchPhase.Began:
                 {
-                    OnTouchDown();
+                    Ray ray = Camera.main.ScreenPointToRay(Input.touches[0].position);
+                    RaycastHit hit;
+
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        if (hit.collider != null && hit.collider.gameObject == this.gameObject)
+                            OnTouchDown();
+                    }
                 }
                 break;
             case TouchPhase.Moved:
@@ -149,18 +138,28 @@ public class Paddle : Singleton<Paddle>
         }
     }
 
-    private void OnTouchDown()
-    {
-
-    }
+    private void OnTouchDown() { }
 
     private void OnTouchDrag()
     {
-        PaddleMovement();
+        //float paddleShift = (defaultPaddleWidthInPixels - ((defaultPaddleWidthInPixels / 2) * sr.size.x)) / 2;
+        //float leftClamp = 185 - paddleShift; // 85
+        //float rightClamp = 545 + paddleShift; // 255
+
+        //float touchPositionPixels = Mathf.Clamp(Input.touches[0].position.x, -1.36f, 1.36f);
+        //float touchPositionWorldX = mainCamera.ScreenToWorldPoint(new Vector3(touchPositionPixels, 0, 0)).x;
+        //transform.position = new Vector3(touchPositionWorldX, paddleInitialY, 0);
+
+        ////float mousePositionPixels = Mathf.Clamp(Input.mousePosition.x, leftClamp, rightClamp);
+        ////float mousePositionWorldX = mainCamera.ScreenToWorldPoint(new Vector3(mousePositionPixels, 0, 0)).x;
+        ////transform.position = new Vector3(mousePositionWorldX, paddleInitialY, 0);
+
+        Vector3 touchPosition;
+        Touch touch = Input.GetTouch(0);
+        touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
+        touchPosition.z = 0;
+        transform.position = new Vector3(touchPosition.x, paddleInitialY, 0);
     }
 
-    private void OnTouchUp()
-    {
-
-    }
+    private void OnTouchUp() { }
 }
